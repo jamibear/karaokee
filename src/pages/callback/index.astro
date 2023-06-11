@@ -4,6 +4,7 @@ import axios from "axios";
 import {
   SPOTIFY_CLIENT_ID,
   SPOTIFY_CLIENT_SECRET,
+  REDIRECT_URI,
 } from "../../util/constants.ts";
 
 const code = Astro.url.searchParams.get("code");
@@ -13,7 +14,7 @@ const authOptions = {
   method: "post",
   data: queryString.stringify({
     code: code,
-    redirect_uri: "http://localhost:3000/callback",
+    redirect_uri: REDIRECT_URI,
     grant_type: "authorization_code",
   }),
   headers: {
