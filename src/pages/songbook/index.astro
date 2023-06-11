@@ -1,0 +1,27 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import { getTrackList } from "../../api/spotify.ts";
+import Songbook from "../../components/Songbook.tsx";
+
+let access_token = "";
+
+if (Astro.cookies.has("karaokee_access_token")) {
+  access_token = Astro.cookies.get("karaokee_access_token").value;
+}
+
+const trackList = await getTrackList(access_token);
+console.log(trackList);
+---
+
+<MainLayout>
+  <!-- {
+    trackList.items.map((track) => (
+      <p>
+        {track.name}
+        {track.duration_ms}
+        {track.artists[0].name}
+      </p>
+    ))
+  } -->
+  <Songbook trackList={trackList} client:load />
+</MainLayout>

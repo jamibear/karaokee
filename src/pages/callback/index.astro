@@ -1,0 +1,39 @@
+---
+import queryString from "query-string";
+import axios from "axios";
+import {
+  SPOTIFY_CLIENT_ID,
+  SPOTIFY_CLIENT_SECRET,
+} from "../../util/constants.ts";
+
+const code = Astro.url.searchParams.get("code");
+
+const authOptions = {
+  url: "https://accounts.spotify.com/api/token",
+  method: "post",
+  data: queryString.stringify({
+    code: code,
+    redirect_uri: "http://localhost:3000/callback",
+    grant_type: "authorization_code",
+  }),
+  headers: {
+    Authorization:
+      "Basic " + btoa(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`),
+    "Content-Type": "application/x-www-form-urlencoded",
+  },
+};
+
+try {
+  const res = await axios(authOptions);
+  const access = res.data.access_token;
+  const refresh = res.data.refresh_token;
+
+  Astro.cookies.set("karaokee_access_token", access);
+  Astro.cookies.set("karaokee_refresh_token", refresh);
+} catch (error) {
+  console.error(error);
+  // Handle error
+}
+
+return Astro.redirect(`/songbook`);
+---
